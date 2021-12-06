@@ -130,7 +130,8 @@ int main (int argc, char** argv){
         std::cout << "Version:       " << trace -> version << std::endl;
         std::cout << "Date:          " << trace -> date << std::endl;
         std::cout << "Signal count:  " << trace -> get_signals() -> size() <<std::endl;
-        std::cout << "Times Recorded:" << trace -> get_timestamps() -> size() << std::endl;
+        std::cout << "Times Recorded:" << trace -> get_timestamps()[0]<< std::endl;
+        std::cout <<"hello";
     
         // Print out every signal in every scope.
         for(VCDScope * scope : *trace -> get_scopes()) {

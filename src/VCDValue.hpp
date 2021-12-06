@@ -11,6 +11,7 @@ IEEE floating point number.
 */
 class VCDValue {
 
+public:
 
     //! Convert a VCDBit to a single char
     static char VCDBit2Char(VCDBit b) {
@@ -27,7 +28,7 @@ class VCDValue {
         }
     }
 
-    public:
+    
         
         /*!
         @brief Create a new VCDValue with the type VCD_SCALAR
