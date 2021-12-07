@@ -4,14 +4,26 @@
 #include <string>
 #include <vector>
 using namespace std;
+struct dep_packets {
+    int message_dep; // It is Considered as Default Arguments and no Error is Raised
+    int destination;
+    int departure;
+};
+
+struct arr_packets {
+    int message_arr; // It is Considered as Default Arguments and no Error is Raised
+    int source;
+    int arrival;
+};
 
 int main()
 {
-    
     string line;
     ifstream myfile("Stats.txt");
     vector<vector<int>> dep;
     vector<vector<int>> arr;
+    vector<vector<dep_packets*>> d_terminal;
+    vector<vector< arr_packets*>> a_terminal;
     int num_of_nodes = 9;
     for (int id = 0; id < num_of_nodes; id++)
     {
@@ -19,6 +31,10 @@ int main()
         vector<int> vala;
         dep.push_back(vald);
         arr.push_back(vala);
+        vector<dep_packets*> samd;
+        d_terminal.push_back(samd);
+        vector<arr_packets*> sama;
+        a_terminal.push_back(sama);
     }
 
     if (myfile.is_open())
@@ -46,6 +62,17 @@ int main()
                 dep[source_i].push_back(message_d);
                 dep[source_i].push_back(destination_d);
                 dep[source_i].push_back(departure_d);
+                dep_packets* outgoing=new  dep_packets;
+                outgoing->message_dep=message_d;
+                outgoing->destination=destination_d;
+                outgoing->departure=departure_d ;
+                //struct dep_packets outgoing;
+                //outgoing.message_dep=message_d;
+                //outgoing.destination=destination_d;
+                //outgoing.departure=departure_d;
+                d_terminal[source_i].push_back(outgoing);/////core fault here
+                //d_terminal.insert(d_terminal.begin() + source_i, outgoing);
+
 
 
 
@@ -75,13 +102,17 @@ int main()
                 arr[destination_i].push_back(message_a);
                 arr[destination_i].push_back(source_a);
                 arr[destination_i].push_back(arrival_a);
+                arr_packets* incoming=new arr_packets;
+                incoming->message_arr=message_a;
+                incoming->source=source_a;
+                incoming->arrival=arrival_a;
+                a_terminal[destination_i].push_back(incoming);  ////core fault segmentation here
+                //a_terminal.insert(a_terminal.begin()+destination_i,incoming);
             }
         }
         myfile.close();
-
-                
         cout<<" Negative time => packets not routed to destination\n\n\n";
-        for(int i=0;i<dep.size();i++)
+        for(int i=0;i<d_terminal.size();i++)
         {    
             int source;
             int dest;
@@ -89,20 +120,20 @@ int main()
             int arrv;
             int messg;
 
-            for(int j=0;j < dep[i].size();j=j+3)
+            for(int j=0;j < d_terminal[i].size();j++)
             {
              source=i;
-             dest=dep[i][j+1];
-             dept=dep[i][j+2];
-             messg=dep[i][j];
+             dest=d_terminal[i][j]->destination;
+             dept=d_terminal[i][j]->departure;
+             messg=d_terminal[i][j]->message_dep;
              arrv;
              int routed=0;
-            for(int k=0;k<arr[dest].size();k=k+3)
+            for(int k=0;k<a_terminal[dest].size();k++)
             {
-                if(arr[dest][k]==messg && arr[dest][k+1]==source)
+                if(a_terminal[dest][k]->message_arr==messg && a_terminal[dest][k]->source==source)
                 {
                     routed=1;
-                    arrv=arr[dest][k+2];
+                    arrv=a_terminal[dest][k]->arrival;
                     break;
                 }
             }
@@ -114,6 +145,7 @@ int main()
             }
         }
     cout<<"Debug output\n\n";
+    /*
     cout<<"DEPARTURES\n";
     for (int i = 0; i < dep.size(); i++)
     {   cout<<"for node"<<i<<"\n";
@@ -137,6 +169,31 @@ int main()
             }
         }   
         cout << endl;
+    }
+    */
+    cout<<"DEPARTURES\n";
+    for(int i=0;i<9;i++){
+        cout<<"node"<<i<<"\n";
+        for(int j=0;j<d_terminal[i].size();j++){
+                cout<<d_terminal[i][j]->message_dep<<" "<<d_terminal[i][j]->destination<<" "<<d_terminal[i][j]->departure;
+                cout<<"\n";
+
+        }
+
+
+
+    }
+    cout<<"ARRIVAL\n";
+    for(int i=0;i<9;i++){
+        cout<<"node"<<i<<"\n";
+        for(int j=0;j<a_terminal[i].size();j++){
+                cout<<a_terminal[i][j]->message_arr<<" "<<a_terminal[i][j]->source<<" "<<a_terminal[i][j]->arrival;
+                cout<<"\n";
+
+        }
+
+
+
     }
 
 
